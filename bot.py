@@ -116,7 +116,7 @@ async def register_bounty_target(ctx, playername, prize="No reward", player_race
     # TODO POST request to REST API
     url = rest_api+'/bounty'
     params = {'playerName': f'{playername}',
-              'playerRace': f'{player_race}', 'playerClass': f'{player_class}', 'prize': f'{prize}'}
+              'playerRace': f'{player_race}', 'playerClass': f'{player_class}', 'reward': f'{prize}'}
 
     x = requests.post(url, json=params)
 
