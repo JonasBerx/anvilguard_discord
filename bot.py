@@ -1,5 +1,7 @@
 from ast import alias
+from cmath import log
 from re import U
+import re
 import discord
 import os
 import random
@@ -128,6 +130,19 @@ async def register_bounty_target(ctx, playername, prize="No reward", player_race
         await ctx.send('Something went wrong, please try again later.')
 
 
+@bot.command()
+async def complete_bounty(ctx, playername):
+    output_string = f'Marked as completed. Once validated your reward will be on the way!'
+    url = rest_api + f'/bounty/complete/{playername}'
+    print(url)
+    x = requests.get(url)
+
+    if x.status_code == 200:
+        await ctx.send(output_string)
+    else:
+        await ctx.send('Something went wrong, please try again later.')
+
+
 @bot.command(aliases=['repair', 'r'])
 async def send_repair_in(ctx, amount):
     # Bot-testing channel in Anvilguard
@@ -137,11 +152,36 @@ async def send_repair_in(ctx, amount):
 
 
 @bot.command(aliases=['contr', 'c', 'contribute'])
-@commands.has_role('Thane')
-async def contribute_to_guild_ledger(ctx, item_name, amount):
+# @commands.has_role('Thane')
+async def contribute_to_guild_ledger(ctx, amount):
     author = ctx.message.author
     # TODO Send data to google spreadsheet to track.
-    await ctx.reply(f'Registered contribution: **{str(item_name)}** - **{str(amount)} units**!\nThank you <@{str(author.id)}>')
+    url = rest_api + '/ledger'
+    params = {
+        'type': 'DEPOSIT',
+        'amount': amount,
+        'playerName': author.name
+    }
+    x = requests.post(url, json=params)
+
+    if x.status_code == 200:
+        await ctx.reply(f'Registered contribution: **{str(amount)} gold**!\nThank you <@{str(author.id)}>')
+    else:
+        await ctx.send('Something went wrong, please try again later.')
+
+
+@bot.command()
+async def get_total_guild_gold(ctx):
+    url = rest_api + '/guild'
+
+    x = requests.get(url)
+
+    print(x.text)
+
+    if x.status_code == 200:
+        await ctx.reply(f'Current total gold in guildbank: {x.text}G')
+    else:
+        await ctx.send('Something went wrong, please try again later.')
 
 
 @bot.command(aliases=['gif', 'dwarf'])
