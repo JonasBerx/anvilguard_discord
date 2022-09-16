@@ -1,0 +1,12 @@
+Weapon
+Armor
+Consumable
+Quest
+Miscellaneous
+Trade Goods
+Recipe
+Container
+Quiver
+Projectile
+Key
+Reagent

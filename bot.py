@@ -35,17 +35,30 @@ class color:
     END = '\033[0m'
 
 
+class item_quality:
+    COMMON = ''
+    UNCOMMON = ''
+    RARE = ''
+    EPIC = ''
+    LEGENDARY = ''
+
+
 # 0.1 Set up item database
 with open('./data/item_db.json') as d:
+    print(f'Loading item database...')
     item_database = {}
-    keys_to_retain = ['itemId', 'name', 'class', 'subclass',
-                      'quality', 'itemLevel', 'requiredLevel', 'icon']
+    # keys_to_retain = ['itemId', 'name', 'class', 'subclass',
+    #                   'quality', 'itemLevel', 'requiredLevel', 'icon']
     item_list = json.load(d)
     i = 0
+    _item_classes = []
     for item in item_list:
-        i += 1
-        item = {your_key: item[your_key] for your_key in keys_to_retain}
+        if item['class'] not in _item_classes:
+            _item_classes.append(item['class'])
         item_database[item['name']] = item
+
+    with open('./data/item_classes.txt', 'w') as f:
+        f.write('\n'.join(str(x) for x in _item_classes))
 
 
 @bot.event
@@ -200,6 +213,34 @@ async def send_gif(ctx, arg=None):
 async def find_item_in_database(ctx, *args):
     _full_name = ' '.join(args)
     req_item = item_database.get(_full_name)
+
+    match req_item['class']:
+        case 'Weapon':
+            # Needs tooltip
+            pass
+        case 'Armor':
+            # Needs tooltip
+            pass
+        case 'Consumable':
+            pass
+        case 'Quest':
+            pass
+        case 'Miscellaneous':
+            pass
+        case 'Trade Goods':
+            pass
+        case 'Recipe':
+            pass
+        case 'Container':
+            pass
+        case 'Quiver':
+            pass
+        case 'Projectile':
+            pass
+        case 'Key':
+            pass
+        case 'Reagent':
+            pass
 
     wowhead_url = 'https://classic.wowhead.com/item=' + str(req_item['itemId'])
     # https://wow.zamimg.com/images/wow/icons/large/
